@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>🍸 Kosta-Shots — Slot Reels</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#0a0a0a; --bg2:#1a0a2e;
+    --neon1:#ff3af2; --neon2:#00f7ff; --neon3:#00ff8a;
+    --chrome:#2a223d; --chrome2:#3a3154;
+    --glass:rgba(255,255,255,.06);
+    --item-h:64px;             /* one row height */
+    --rows:3;                  /* visible rows per reel */
+    --radius:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2));
+    color:#fff; display:flex; flex-direction:column;
+  }
+
+  /* Header */
+  header{padding:14px 14px 6px;text-align:center}
+  .backbar{display:flex;justify-content:center;margin:.4rem 0 .8rem}
+  .back{
+    text-decoration:none;color:#fff;border:1px solid rgba(255,255,255,.25);
+    padding:.5rem .9rem;border-radius:12px;background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  }
+  .title{
+    font-family:'Bebas Neue',sans-serif; letter-spacing:1px;
+    font-size:clamp(2.2rem,6.5vw,3.6rem);
+    background:linear-gradient(90deg,var(--neon1),var(--neon2),var(--neon1));
+    background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    animation:shine 3s linear infinite; text-shadow:0 0 30px rgba(255,0,255,.35);
+  }
+  .subtitle{color:var(--neon3);letter-spacing:3px;text-transform:uppercase;font-size:.95rem;opacity:.9;margin-top:2px}
+  @keyframes shine{0%{background-position:0 50%}100%{background-position:200% 50%}}
+
+  /* Machine body */
+  .wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:14px}
+  .machine{
+    width:min(1000px,96vw);
+    background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:22px; padding:18px;
+    box-shadow:0 18px 40px rgba(0,0,0,.45), inset 0 0 40px rgba(255,255,255,.05);
+  }
+  .reels{
+    display:grid; grid-template-columns:1fr auto 1fr; gap:16px; align-items:center;
+  }
+
+  /* Reel chrome frame */
+  .reel{
+    background:linear-gradient(180deg,var(--chrome),var(--chrome2));
+    border-radius:var(--radius);
+    padding:10px; position:relative; box-shadow:inset 0 0 30px rgba(0,0,0,.55);
+    border:1px solid rgba(255,255,255,.08);
+  }
+  .window{
+    height:calc(var(--rows) * var(--item-h));
+    overflow:hidden; border-radius:14px;
+    background:radial-gradient(120% 100% at 50% 50%, rgba(255,255,255,.05), rgba(0,0,0,.45));
+    position:relative;
+    outline:1px solid rgba(255,255,255,.08);
+  }
+  /* Spinning belt */
+  .belt{ will-change:transform }
+  .item{
+    height:var(--item-h); display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue',sans-serif; letter-spacing:.4px;
+    font-size:clamp(1.6rem,5.6vw,2.6rem);
+    text-shadow:0 0 14px rgba(0,255,255,.35);
+    user-select:none; white-space:nowrap;
+  }
+
+  /* Selector bar (middle row) */
+  .selector{
+    pointer-events:none; position:absolute; left:6px; right:6px;
+    top:calc(var(--item-h) * 1); height:var(--item-h);
+    border-radius:10px;
+    box-shadow:0 0 0 2px rgba(255,255,255,.18) inset, 0 0 26px rgba(0,255,255,.35);
+    outline:2px solid rgba(0,255,255,.18);
+    background:linear-gradient(90deg,rgba(0,255,255,.06),rgba(255,0,255,.06));
+    mix-blend-mode:screen;
+  }
+
+  /* Controls */
+  .controls{display:flex;flex-direction:column;align-items:center;gap:12px;min-width:170px}
+  .btn{
+    appearance:none;border:none;border-radius:14px;padding:14px 22px;cursor:pointer;
+    color:#fff;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
+    background:linear-gradient(135deg,rgba(255,0,255,.22),rgba(0,255,255,.22));
+    border:2px solid transparent; box-shadow:0 0 22px rgba(255,0,255,.35), inset 0 0 18px rgba(255,255,255,.08);
+    transition:.18s transform ease,.2s box-shadow ease;
+  }
+  .btn:hover{transform:translateY(-2px)}
+  .btn:active{transform:translateY(0)}
+  .btn[disabled]{opacity:.55;cursor:not-allowed}
+  .spin{border-color:var(--neon2);box-shadow:0 0 26px rgba(0,255,255,.45), inset 0 0 14px rgba(0,255,255,.18)}
+  .reset{border-color:var(--neon1);box-shadow:0 0 26px rgba(255,0,255,.45), inset 0 0 14px rgba(255,0,255,.12)}
+
+  .result{margin-top:10px;text-align:center;min-height:2.4em}
+  .headline{font-weight:800;color:#fff;text-shadow:0 0 12px rgba(0,255,138,.45)}
+  .pair{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,6vw,2.6rem);text-shadow:0 0 16px rgba(0,255,255,.45)}
+
+  footer{text-align:center;color:rgba(255,255,255,.7);padding:12px}
+
+  /* Confetti */
+  .confetti{position:fixed;top:-8px;width:10px;height:10px;opacity:0;pointer-events:none;z-index:999}
+  @keyframes drop{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(110vh) rotate(720deg)}}
+
+  @media (max-width:880px){ .reels{grid-template-columns:1fr;gap:12px}.controls{order:-1} }
+  @media (prefers-reduced-motion: reduce){ .title{animation:none} .btn{transition:none} }
+</style>
+</head>
+<body>
+  <header>
+    <div class="backbar"><a class="back" href="index.html">⟵ Back to Home</a></div>
+    <h1 class="title">🍸 KOSTA-SHOTS</h1>
+    <div class="subtitle">Spin • Pair • Take a Shot</div>
+  </header>
+
+  <main class="wrap">
+    <section class="machine">
+      <div class="reels">
+        <!-- Left reel -->
+        <div class="reel">
+          <div class="window"><div id="beltL" class="belt"></div><div class="selector"></div></div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+          <button id="spinBtn" class="btn spin">Spin!</button>
+          <button id="resetBtn" class="btn reset" disabled>Reset</button>
+        </div>
+
+        <!-- Right reel -->
+        <div class="reel">
+          <div class="window"><div id="beltR" class="belt"></div><div class="selector"></div></div>
+        </div>
+      </div>
+
+      <div id="result" class="result"></div>
+    </section>
+  </main>
+
+  <footer>Made with ❤️ for Kostas & Friends — Thessaloniki 2025</footer>
+
+<script>
+/* -------------------- DATA -------------------- */
+const guests = [
+  "Kostas","Maria","Alex","Nikos","Eleni","Giannis","Christina","George","Dimitra","Sofia",
+  "Vasilis","Katerina","Panagiotis","Irene","Stavros","Zoe","Petros","Eleni K.","Marios","Olga",
+  "Nadia","Andreas","Theodore","Athena","Michalis","Evan","Christos","Vicky","Aris","Foteini",
+  "Lena","Damian","Yannis","Kleio","Antonis","Spyros","Melina","Elli","Rania","Aggelos",
+  "Dora","Thanos","Lazaros","Anna","Jason","Marina","Filippos","Ilias","Manos","Natasa"
+];
+
+/* -------------------- BUILD REELS -------------------- */
+const beltL = document.getElementById('beltL');
+const beltR = document.getElementById('beltR');
+
+const REPEATS = 16; // how tall each belt is (bigger = more continuous feel)
+function buildBelt(el, names){
+  const frag = document.createDocumentFragment();
+  for(let r=0;r<REPEATS;r++){
+    names.forEach(n=>{
+      const d = document.createElement('div');
+      d.className = 'item';
+      d.textContent = n;
+      frag.appendChild(d);
+    });
+  }
+  el.appendChild(frag);
+}
+buildBelt(beltL, guests);
+buildBelt(beltR, guests);
+
+const ITEM_H = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--item-h')); // px
+const VISIBLE_ROWS = 3;
+const TOTAL_ITEMS = guests.length * REPEATS;
+const BELT_H = TOTAL_ITEMS * ITEM_H;
+const CENTER_ROW_INDEX = 1; // 0,1,2 -> middle row
+const CENTER_OFFSET = CENTER_ROW_INDEX * ITEM_H;
+
+/* -------------------- REEL PHYSICS -------------------- */
+function Reel(el){
+  this.el = el;
+  this.offset = 0;   // px scrolled from start
+  this.speed  = 0;   // px/s
+  this.target = 0;   // px to stop at (absolute)
+  this.animId = null;
+}
+Reel.prototype.render = function(){
+  // Create infinite loop feel
+  const y = - (this.offset % BELT_H);
+  this.el.style.transform = `translateY(${y}px)`;
+};
+Reel.prototype.stopAtName = function(name, minTurns=8){
+  // pick a target index far enough ahead so we spin several full loops
+  const currentIndex = Math.floor(this.offset / ITEM_H);
+  const indices = [];
+  for(let i=0;i<TOTAL_ITEMS;i++){
+    if (guests[i % guests.length] === name) indices.push(i);
+  }
+  // choose first index ≥ currentIndex + minTurns*guests.length + CENTER_ROW_INDEX
+  const minIndex = currentIndex + minTurns*guests.length + CENTER_ROW_INDEX;
+  let chosen = indices.find(i => i >= minIndex);
+  if (chosen === undefined) chosen = indices[0] + Math.ceil((minIndex - indices[0]) / guests.length) * guests.length;
+  // translate so chosen item lands in the center row
+  this.target = chosen * ITEM_H - CENTER_OFFSET;
+};
+Reel.prototype.spinToTarget = function(initialSpeed=3800){
+  this.speed = initialSpeed; // px/s
+  const distance = this.target - this.offset; // px to travel
+  const u = this.speed;
+  const a = - (u*u) / (2 * distance); // constant decel so v=0 at target
+
+  return new Promise(resolve=>{
+    const start = performance.now();
+    const step = (t)=>{
+      const dt = (t - (this._lastT ?? t)) / 1000; // s
+      this._lastT = t;
+      // update speed, cap at 0
+      this.speed = Math.max(0, this.speed + a*dt);
+      this.offset += this.speed * dt;
+
+      if (this.offset >= this.target || this.speed <= 0.1) {
+        this.offset = this.target;
+        this.render();
+        cancelAnimationFrame(this.animId);
+        this._lastT = null;
+        resolve();
+        return;
+      }
+      this.render();
+      this.animId = requestAnimationFrame(step);
+    };
+    this.animId = requestAnimationFrame(step);
+  });
+};
+
+const reelL = new Reel(beltL);
+const reelR = new Reel(beltR);
+// Seed a nice starting look
+reelL.offset = Math.random()*BELT_H; reelL.render();
+reelR.offset = Math.random()*BELT_H; reelR.render();
+
+/* -------------------- GAME LOGIC -------------------- */
+const spinBtn = document.getElementById('spinBtn');
+const resetBtn = document.getElementById('resetBtn');
+const resultEl = document.getElementById('result');
+let spinning = false;
+
+function pickTwoDistinct(){
+  if (guests.length < 2) return [guests[0]??"Player A", guests[1]??"Player B"];
+  const a = Math.floor(Math.random()*guests.length);
+  let b = Math.floor(Math.random()*guests.length);
+  if (b===a) b = (a+1 + Math.floor(Math.random()*(guests.length-1))) % guests.length;
+  return [guests[a], guests[b]];
+}
+
+async function spin(){
+  if (spinning) return;
+  spinning = true;
+  spinBtn.disabled = true; resetBtn.disabled = true; resultEl.innerHTML = "";
+
+  const [leftName, rightName] = pickTwoDistinct();
+  reelL.stopAtName(leftName, 9 + Math.floor(Math.random()*2));   // 9–10 turns
+  reelR.stopAtName(rightName, 10 + Math.floor(Math.random()*2));  // 10–11 turns
+
+  await Promise.all([
+    reelL.spinToTarget(4000 + Math.random()*500),
+    reelR.spinToTarget(4150 + Math.random()*500)
+  ]);
+
+  // Result banner
+  const h = document.createElement('div'); h.className='headline'; h.textContent='🎉 Take a shot! 🥃';
+  const p = document.createElement('div'); p.className='pair'; p.textContent=`${leftName}  &  ${rightName}`;
+  resultEl.append(h,p);
+  confetti(140); beep();
+
+  spinning = false;
+  spinBtn.textContent = "Spin Again";
+  spinBtn.disabled = false; resetBtn.disabled = false;
+}
+
+function reset(){
+  if (spinning) return;
+  resultEl.innerHTML = "";
+  spinBtn.textContent = "Spin!";
+  resetBtn.disabled = true;
+  // nudge belts to random positions so next spin feels fresh
+  reelL.offset = Math.random()*BELT_H; reelL.render();
+  reelR.offset = Math.random()*BELT_H; reelR.render();
+}
+
+spinBtn.addEventListener('click', spin);
+resetBtn.addEventListener('click', reset);
+// keyboard
+document.addEventListener('keydown', e=>{
+  if((e.code==='Enter'||e.code==='Space') && !spinning && !spinBtn.disabled) spin();
+});
+
+/* -------------------- Confetti + Beep -------------------- */
+function confetti(n=100){
+  const colors=['#ff00ff','#00ffff','#00ff8a','#ffd400','#ff5ea0','#7da6ff'];
+  for(let i=0;i<n;i++){
+    const s=document.createElement('div');
+    s.className='confetti';
+    s.style.left=(Math.random()*100)+'vw';
+    s.style.background=colors[Math.floor(Math.random()*colors.length)];
+    s.style.width=s.style.height = (6+Math.random()*8)+'px';
+    s.style.borderRadius = Math.random()>.5 ? '2px' : '50%';
+    s.style.animation = `drop ${2.4+Math.random()*1.6}s linear forwards`;
+    s.style.opacity='1';
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(), 4200);
+  }
+}
+function beep(){
+  try{
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type='triangle'; o.frequency.value=640;
+    g.gain.value=.0001; g.gain.exponentialRampToValueAtTime(.22, ctx.currentTime+.06);
+    g.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime+.38);
+    o.connect(g).connect(ctx.destination); o.start(); o.stop(ctx.currentTime+.4);
+  }catch(e){}
+}
+</script>
+</body>
+</html>
