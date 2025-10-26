@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kosta-Quiz 🧠 | Kostas' 32nd Birthday</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#0a0a0a;
+      --bg2:#1a0a2e;
+      --neon-pink:#ff00ff;
+      --neon-cyan:#00ffff;
+      --neon-lime:#00ff88;
+      --text:#ffffff;
+      --muted:rgba(255,255,255,0.65);
+      --card:rgba(255,255,255,0.06);
+      --card-brd:rgba(255,255,255,0.12);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(135deg,var(--bg1),var(--bg2));
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:720px;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .title{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:clamp(2rem,6.5vw,3.6rem);
+      line-height:1;
+      text-align:center;
+      background:linear-gradient(90deg,var(--neon-pink),var(--neon-cyan),var(--neon-pink));
+      background-size:200% auto;
+      -webkit-background-clip:text;
+      background-clip:text;
+      -webkit-text-fill-color:transparent;
+      text-shadow:0 0 28px rgba(255,0,255,0.45);
+      animation:shift 4s linear infinite;
+      letter-spacing:1px;
+    }
+    @keyframes shift{
+      0%{background-position:0% 50%}
+      100%{background-position:200% 50%}
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--card-brd);
+      border-radius:18px;
+      padding:18px;
+      backdrop-filter:blur(8px);
+      box-shadow:0 0 40px rgba(255,0,255,0.06), 0 0 30px rgba(0,255,255,0.05);
+    }
+
+    .subtitle{
+      text-align:center;
+      color:var(--neon-lime);
+      letter-spacing:3px;
+      text-transform:uppercase;
+      font-size:clamp(0.8rem,2.6vw,1rem);
+      margin-top:-6px;
+      margin-bottom:6px;
+      text-shadow:0 0 16px rgba(0,255,136,0.5);
+    }
+
+    .meta{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      font-size:0.95rem;
+      color:var(--muted);
+      margin-bottom:10px;
+    }
+
+    .bar{
+      width:100%;
+      height:10px;
+      background:rgba(255,255,255,0.08);
+      border:1px solid var(--card-brd);
+      border-radius:999px;
+      overflow:hidden;
+      margin-bottom:14px;
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,var(--neon-pink),var(--neon-cyan));
+      box-shadow:0 0 16px rgba(255,0,255,0.5);
+      transition:width .35s ease;
+    }
+
+    .qtext{
+      font-size:clamp(1rem,3.8vw,1.35rem);
+      font-weight:600;
+      margin-bottom:12px;
+      text-shadow:0 0 10px rgba(0,255,255,0.25);
+    }
+
+    .choices{
+      display:grid;
+      gap:10px;
+    }
+
+    .choice{
+      background:rgba(255,255,255,0.04);
+      border:1px solid var(--card-brd);
+      color:var(--text);
+      padding:12px 14px;
+      border-radius:12px;
+      text-align:left;
+      cursor:pointer;
+      transition:transform .12s ease, box-shadow .2s ease, border-color .2s ease;
+      position:relative;
+    }
+    .choice:focus{outline:none}
+    .choice:hover{transform:translateY(-2px); box-shadow:0 6px 24px rgba(0,255,255,0.12)}
+    .choice.selected{
+      border-color:var(--neon-cyan);
+      box-shadow:0 0 24px rgba(0,255,255,0.2) inset, 0 6px 24px rgba(0,255,255,0.12);
+    }
+    .choice.correct{
+      border-color:var(--neon-lime);
+      box-shadow:0 0 24px rgba(0,255,136,0.3) inset;
+    }
+    .choice.wrong{
+      border-color:#ff4d6d;
+      box-shadow:0 0 24px rgba(255,77,109,0.25) inset;
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      margin-top:14px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      flex:1;
+      min-width:140px;
+      background:linear-gradient(135deg, rgba(255,0,255,0.18), rgba(0,255,255,0.18));
+      border:2px solid var(--neon-pink);
+      color:#fff;
+      font-weight:700;
+      padding:12px 16px;
+      border-radius:12px;
+      cursor:pointer;
+      transition:transform .15s ease, box-shadow .25s ease, filter .15s ease;
+      text-align:center;
+      user-select:none;
+    }
+    .btn:hover{transform:translateY(-2px); box-shadow:0 0 26px rgba(255,0,255,0.6)}
+    .btn:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+      transform:none;
+      box-shadow:none;
+      filter:grayscale(0.2);
+    }
+    .btn.secondary{
+      border-color:var(--neon-cyan);
+    }
+    .btn.ghost{
+      background:transparent;
+      border-color:var(--card-brd);
+    }
+
+    .result{
+      text-align:center;
+      padding:12px 8px 0;
+    }
+    .score{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:clamp(2rem,8vw,3.5rem);
+      line-height:1;
+      letter-spacing:1px;
+      background:linear-gradient(90deg,var(--neon-lime),var(--neon-cyan));
+      -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+      text-shadow:0 0 24px rgba(0,255,136,0.35);
+      margin-bottom:4px;
+    }
+    .band{ color:var(--muted); font-size:1rem; }
+
+    .footer{
+      text-align:center;
+      color:var(--muted);
+      font-size:0.9rem;
+      margin-top:4px;
+    }
+    .footer a{color:var(--neon-cyan); text-decoration:none}
+    .footer a:hover{text-decoration:underline}
+
+    /* Particles + Confetti */
+    .particles{position:fixed; inset:0; pointer-events:none; z-index:0}
+    .particle{
+      position:absolute; border-radius:50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, transparent 70%);
+      width:4px; height:4px; opacity:.5;
+      animation:float 6s infinite ease-in-out;
+    }
+    @keyframes float{
+      0%,100%{transform:translateY(0) translateX(0); opacity:.35}
+      50%{transform:translateY(-80px) translateX(40px); opacity:.9}
+    }
+
+    .confetti{
+      position:fixed; top:-10px; width:10px; height:10px; opacity:0;
+      animation:fall 2.6s linear forwards;
+      z-index:999;
+    }
+    @keyframes fall{
+      0%{opacity:1; transform:translateY(0) rotate(0)}
+      100%{opacity:0; transform:translateY(110vh) rotate(720deg)}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .title,.particle,.confetti{animation:none}
+      .bar > div{transition:none}
+      .choice:hover{transform:none}
+      .btn:hover{transform:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+
+  <main class="wrap">
+    <h1 class="title">Kosta-Quiz 🧠</h1>
+    <p class="subtitle">How well do you know the birthday king?</p>
+
+    <!-- Quiz Card -->
+    <section class="card" id="quizCard" aria-live="polite">
+      <div class="meta">
+        <div id="qCounter">Question 1/10</div>
+        <div id="scoreLive">Score: 0</div>
+      </div>
+      <div class="bar" aria-hidden="true"><div id="progressFill"></div></div>
+
+      <div class="qtext" id="qText">Loading…</div>
+
+      <div class="choices" id="choices" role="group" aria-labelledby="qText">
+        <!-- Choices injected -->
+      </div>
+
+      <div class="controls">
+        <button class="btn ghost" id="btnBack">← Home</button>
+        <button class="btn secondary" id="btnSkip">Skip</button>
+        <button class="btn" id="btnNext" disabled>Next →</button>
+      </div>
+    </section>
+
+    <!-- Result Card -->
+    <section class="card" id="resultCard" hidden>
+      <div class="result">
+        <div class="score" id="finalScore">0/10</div>
+        <p class="band" id="finalBand">You did it!</p>
+      </div>
+      <div class="controls" style="margin-top:14px">
+        <button class="btn" id="btnPlayAgain">Play Again 🔁</button>
+        <button class="btn secondary" onclick="location.href='index.html'">Back to Home 🏠</button>
+      </div>
+      <p class="footer">No data stored. Refresh to reset. Be nice, be Greek 🇬🇷</p>
+    </section>
+
+    <p class="footer">Made with ❤️ for Kostas & Friends — Thessaloniki 2025 · <a href="index.html">Home</a></p>
+  </main>
+
+  <script>
+    // ---------- Config: Questions (hardcoded, 10) ----------
+    // answer = index in choices array (0-based)
+    const questions = [
+      {
+        q: "What’s Kostas’ go-to drink?",
+        choices: ["Whiskey", "Gin Tonic", "Ouzo", "Beer"],
+        answer: 2
+      },
+      {
+        q: "Which dance move is officially banned at his parties?",
+        choices: ["The Worm", "Flossing", "Twerk-of-Fury", "Shopping Cart"],
+        answer: 0
+      },
+      {
+        q: "What city did Kostas once get lost in for 6 hours?",
+        choices: ["Athens", "Thessaloniki", "Berlin", "Lisbon"],
+        answer: 3
+      },
+      {
+        q: "What’s his most used phrase after 2 AM?",
+        choices: ["\"One more round!\"", "\"Where are my keys?\"", "\"I love you guys\"", "\"Same bar tomorrow?\""],
+        answer: 0
+      },
+      {
+        q: "Kostas’ emergency snack at 03:00 is…",
+        choices: ["Bougatza", "Souvlaki", "Spanakopita", "French fries"],
+        answer: 1
+      },
+      {
+        q: "Who usually ends up as DJ when the playlist derails?",
+        choices: ["Kostas", "Maria", "Alex", "A random cousin"],
+        answer: 0
+      },
+      {
+        q: "His costume of choice last Halloween?",
+        choices: ["Greek philosopher", "80s aerobics legend", "Vampire Bartender", "Soccer Referee"],
+        answer: 2
+      },
+      {
+        q: "Signature greeting when he arrives late?",
+        choices: ["Silent nod", "Double cheek kiss + joke", "High five spin", "Salute + bow"],
+        answer: 1
+      },
+      {
+        q: "Preferred beach activity?",
+        choices: ["Volleyball", "Siesta under umbrella", "Freestyle dancing", "Reading mystery novels"],
+        answer: 2
+      },
+      {
+        q: "The sacred rule of tonight?",
+        choices: ["No photos", "Hydrate or diedrate", "Shots are diplomacy", "Phones in a bowl"],
+        answer: 2
+      },
+    ];
+
+    // ---------- DOM ----------
+    const particlesEl   = document.getElementById('particles');
+    const qCounterEl    = document.getElementById('qCounter');
+    const scoreLiveEl   = document.getElementById('scoreLive');
+    const progressFill  = document.getElementById('progressFill');
+    const qTextEl       = document.getElementById('qText');
+    const choicesEl     = document.getElementById('choices');
+    const btnNext       = document.getElementById('btnNext');
+    const btnSkip       = document.getElementById('btnSkip');
+    const btnBack       = document.getElementById('btnBack');
+
+    const quizCard      = document.getElementById('quizCard');
+    const resultCard    = document.getElementById('resultCard');
+    const finalScoreEl  = document.getElementById('finalScore');
+    const finalBandEl   = document.getElementById('finalBand');
+    const btnPlayAgain  = document.getElementById('btnPlayAgain');
+
+    // ---------- State ----------
+    let idx = 0;
+    let score = 0;
+    let selected = null;
+    const total = questions.length;
+
+    // ---------- Particles ----------
+    (function makeParticles(){
+      const n = 18;
+      for(let i=0;i<n;i++){
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = Math.random()*4+2;
+        p.style.width = size+'px';
+        p.style.height = size+'px';
+        p.style.left = (Math.random()*100)+'%';
+        p.style.top = (Math.random()*100)+'%';
+        p.style.animationDelay = (Math.random()*6)+'s';
+        p.style.animationDuration = (Math.random()*4+4)+'s';
+        particlesEl.appendChild(p);
+      }
+    })();
+
+    // ---------- Quiz Rendering ----------
+    function render(){
+      const q = questions[idx];
+      qCounterEl.textContent = `Question ${idx+1}/${total}`;
+      scoreLiveEl.textContent = `Score: ${score}`;
+      progressFill.style.width = `${((idx)/total)*100}%`;
+
+      qTextEl.textContent = q.q;
+      choicesEl.innerHTML = '';
+      selected = null;
+      btnNext.disabled = true;
+
+      q.choices.forEach((c, i)=>{
+        const btn = document.createElement('button');
+        btn.className = 'choice';
+        btn.setAttribute('type','button');
+        btn.setAttribute('aria-pressed','false');
+        btn.textContent = c;
+        btn.addEventListener('click', ()=>{
+          // toggle selected state
+          [...choicesEl.children].forEach(el=>el.classList.remove('selected'));
+          btn.classList.add('selected');
+          selected = i;
+          btnNext.disabled = false;
+        });
+        // keyboard support: enter triggers select if focused
+        btn.addEventListener('keydown', (e)=>{
+          if(e.key==='Enter'||e.key===' '){
+            e.preventDefault();
+            btn.click();
+          }
+        });
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    function lockAnswers(correctIndex){
+      const items = [...choicesEl.children];
+      items.forEach((el, i)=>{
+        el.disabled = true;
+        if(i === correctIndex) el.classList.add('correct');
+        if(selected !== null && i === selected && i !== correctIndex) el.classList.add('wrong');
+      });
+    }
+
+    function next(){
+      const correct = questions[idx].answer;
+      if(selected === correct) score++;
+      lockAnswers(correct);
+
+      // brief pause to show correctness, then move
+      setTimeout(()=>{
+        idx++;
+        if(idx < total){
+          render();
+        } else {
+          finish();
+        }
+      }, 600);
+    }
+
+    function skip(){
+      // no score change, just move on
+      idx++;
+      if(idx < total){
+        render();
+      } else {
+        finish();
+      }
+    }
+
+    function finish(){
+      // fill progress bar to 100
+      progressFill.style.width = '100%';
+      quizCard.hidden = true;
+      resultCard.hidden = false;
+
+      finalScoreEl.textContent = `${score}/${total}`;
+      finalBandEl.textContent = bandText(score, total);
+
+      confettiBurst();
+    }
+
+    function bandText(s, t){
+      const pct = (s/t)*100;
+      if(s<=3) return "Do you even know Kostas? 😅";
+      if(s<=7) return "You’re part of the crew 🍻";
+      return "You’re basically his twin 🔥";
+    }
+
+    // ---------- Confetti ----------
+    function confettiBurst(){
+      const colors = ['#ff00ff','#00ffff','#00ff88','#ffff00','#ff00aa','#ff4d6d'];
+      const N = 80;
+      for(let i=0;i<N;i++){
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.left = (Math.random()*100)+'%';
+        c.style.background = colors[Math.floor(Math.random()*colors.length)];
+        c.style.animationDelay = (Math.random()*0.4)+'s';
+        c.style.transform = `translateY(0) rotate(${Math.random()*360}deg)`;
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(), 3000);
+      }
+    }
+
+    // ---------- Events ----------
+    btnNext.addEventListener('click', next);
+    btnSkip.addEventListener('click', skip);
+    btnBack.addEventListener('click', ()=> location.href='index.html');
+    btnPlayAgain.addEventListener('click', ()=>{
+      // reset
+      idx = 0; score = 0; selected=null;
+      resultCard.hidden = true;
+      quizCard.hidden = false;
+      render();
+    });
+
+    // Keyboard convenience: n = next, s = skip, h = home
+    window.addEventListener('keydown', (e)=>{
+      if(resultCard.hidden){
+        if(e.key.toLowerCase()==='n' && !btnNext.disabled) next();
+        if(e.key.toLowerCase()==='s') skip();
+        if(e.key.toLowerCase()==='h') location.href='index.html';
+      }
+    });
+
+    // ---------- Init ----------
+    render();
+  </script>
+</body>
+</html>
