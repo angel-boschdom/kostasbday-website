@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kostas' 32nd Birthday Bash 🎉</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background particles */
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+            50% { transform: translateY(-100px) translateX(50px); opacity: 0.8; }
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 600px;
+            z-index: 1;
+        }
+
+        .title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            background: linear-gradient(90deg, #ff00ff, #00ffff, #ff00ff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 3s linear infinite;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            color: #00ff88;
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+        }
+
+        .games-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .game-btn {
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.2), rgba(0, 255, 255, 0.2));
+            border: 2px solid;
+            border-radius: 15px;
+            padding: 1.5rem 2rem;
+            font-size: clamp(1.2rem, 5vw, 1.8rem);
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .game-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .game-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .quiz-btn {
+            border-color: #ff00ff;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
+        }
+
+        .quiz-btn:hover {
+            box-shadow: 0 0 40px rgba(255, 0, 255, 0.8);
+            transform: translateY(-5px);
+        }
+
+        .roulette-btn {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .roulette-btn:hover {
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.8);
+            transform: translateY(-5px);
+        }
+
+        .shots-btn {
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+        }
+
+        .shots-btn:hover {
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.8);
+            transform: translateY(-5px);
+        }
+
+        .footer {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .footer:hover {
+            color: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+        }
+
+        /* Easter egg */
+        .easter-egg {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            animation: spin 2s linear infinite;
+            z-index: 1000;
+        }
+
+        @keyframes spin {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Confetti */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff00ff;
+            animation: confetti-fall 3s linear forwards;
+            opacity: 0;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .particle,
+            .title,
+            .confetti,
+            .easter-egg {
+                animation: none;
+            }
+            
+            .game-btn {
+                transition: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Main container -->
+    <div class="container">
+        <h1 class="title">Kostas' 32nd Birthday Bash 🎉</h1>
+        <p class="subtitle">Play. Drink. Survive.</p>
+
+        <div class="games-container">
+            <a href="quiz.html" class="game-btn quiz-btn">
+                <span>🧠 Kosta-Quiz</span>
+            </a>
+            <a href="roulette.html" class="game-btn roulette-btn">
+                <span>🎰 Kosta-Roulette</span>
+            </a>
+            <a href="shots.html" class="game-btn shots-btn">
+                <span>🍸 Kosta-Shots</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="footer" id="footer">
+        Made with ❤️ for Kostas & Friends — Thessaloniki 2025
+    </div>
+
+    <!-- Easter egg -->
+    <div class="easter-egg" id="easterEgg">🍺</div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 4 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 6}s`;
+                particle.style.animationDuration = `${Math.random() * 4 + 4}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Easter egg - click footer 3 times
+        let clickCount = 0;
+        const footer = document.getElementById('footer');
+        const easterEgg = document.getElementById('easterEgg');
+
+        footer.addEventListener('click', () => {
+            clickCount++;
+            if (clickCount === 3) {
+                easterEgg.style.display = 'block';
+                createConfetti();
+                setTimeout(() => {
+                    easterEgg.style.display = 'none';
+                    clickCount = 0;
+                }, 2000);
+            }
+        });
+
+        // Confetti burst
+        function createConfetti() {
+            const colors = ['#ff00ff', '#00ffff', '#00ff88', '#ffff00', '#ff00aa'];
+            const confettiCount = 50;
+
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.top = '0';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+                
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        // Initialize
+        createParticles();
+
+        // Add hover sound effect (optional - uncomment if you want beep sounds)
+        /*
+        const buttons = document.querySelectorAll('.game-btn');
+        buttons.forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                // Add subtle audio feedback here if desired
+            });
+        });
+        */
+    </script>
+</body>
+</html>
