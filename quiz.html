@@ -245,7 +245,7 @@
     <!-- Quiz Card -->
     <section class="card" id="quizCard" aria-live="polite">
       <div class="meta">
-        <div id="qCounter">Question 1/10</div>
+        <div id="qCounter">Question 1/8</div>
         <div id="scoreLive">Score: 0</div>
       </div>
       <div class="bar" aria-hidden="true"><div id="progressFill"></div></div>
@@ -266,7 +266,7 @@
     <!-- Result Card -->
     <section class="card" id="resultCard" hidden>
       <div class="result">
-        <div class="score" id="finalScore">0/10</div>
+        <div class="score" id="finalScore">0/8</div>
         <p class="band" id="finalBand">You did it!</p>
       </div>
       <div class="controls" style="margin-top:14px">
@@ -280,59 +280,89 @@
   </main>
 
   <script>
-    // ---------- Config: Questions (hardcoded, 10) ----------
+    // ---------- Config: Questions (hardcoded, 8) ----------
     // answer = index in choices array (0-based)
     const questions = [
       {
-        q: "What’s Kostas’ go-to drink?",
-        choices: ["Whiskey", "Gin Tonic", "Ouzo", "Beer"],
+        q: "What’s his drink of choice?",
+        choices: [
+          "Beer",
+          "Wine",
+          "Anything with mezcal or margarita in the title",
+          "A protein shake disguised as a cocktail"
+        ],
         answer: 2
       },
       {
-        q: "Which dance move is officially banned at his parties?",
-        choices: ["The Worm", "Flossing", "Twerk-of-Fury", "Shopping Cart"],
+        q: "Which sport would he most likely be playing on a Saturday morning?",
+        choices: [
+          "Tennis",
+          "Football",
+          "Marathon running",
+          "Competitive teeth polishing"
+        ],
         answer: 0
       },
       {
-        q: "What city did Kostas once get lost in for 6 hours?",
-        choices: ["Athens", "Thessaloniki", "Berlin", "Lisbon"],
+        q: "Which athlete once made him tear up during a documentary?",
+        choices: [
+          "Roger Federer",
+          "Giannis Antetokounmpo",
+          "Lewis Hamilton",
+          "Himself, watching"
+        ],
+        answer: 1
+      },
+      {
+        q: "What random challenge does Kostas sometimes give himself just for fun?",
+        choices: [
+          "Naming all Greek islands in under a minute",
+          "Listing 10 different types of pasta out of nowhere",
+          "Counting his steps while brushing his teeth",
+          "Quoting every line from The Lion King in perfect order"
+        ],
+        answer: 1
+      },
+      {
+        q: "Which of the following describes him best?",
+        choices: [
+          "Wild and chaotic",
+          "Relaxed and spontaneous",
+          "Meticulous — the man measures toothpaste by the millilitre",
+          "Secretly both b) and c), depending on the mezcal level"
+        ],
         answer: 3
       },
       {
-        q: "What’s his most used phrase after 2 AM?",
-        choices: ["\"One more round!\"", "\"Where are my keys?\"", "\"I love you guys\"", "\"Same bar tomorrow?\""],
-        answer: 0
-      },
-      {
-        q: "Kostas’ emergency snack at 03:00 is…",
-        choices: ["Bougatza", "Souvlaki", "Spanakopita", "French fries"],
+        q: "If you moved one item on his desk by 2 cm, what would happen?",
+        choices: [
+          "He wouldn’t notice",
+          "He’d notice instantly and realign it mid-conversation",
+          "He’d open a spreadsheet to track all object movements",
+          "You’d be banned from the desk for life"
+        ],
         answer: 1
       },
       {
-        q: "Who usually ends up as DJ when the playlist derails?",
-        choices: ["Kostas", "Maria", "Alex", "A random cousin"],
-        answer: 0
-      },
-      {
-        q: "His costume of choice last Halloween?",
-        choices: ["Greek philosopher", "80s aerobics legend", "Vampire Bartender", "Soccer Referee"],
-        answer: 2
-      },
-      {
-        q: "Signature greeting when he arrives late?",
-        choices: ["Silent nod", "Double cheek kiss + joke", "High five spin", "Salute + bow"],
+        q: "His favourite movie is:",
+        choices: [
+          "Fast & Furious",
+          "The Lion King",
+          "Top Gun",
+          "My Big Fat Greek Wedding"
+        ],
         answer: 1
       },
       {
-        q: "Preferred beach activity?",
-        choices: ["Volleyball", "Siesta under umbrella", "Freestyle dancing", "Reading mystery novels"],
-        answer: 2
-      },
-      {
-        q: "The sacred rule of tonight?",
-        choices: ["No photos", "Hydrate or diedrate", "Shots are diplomacy", "Phones in a bowl"],
-        answer: 2
-      },
+        q: "What does Kostas proudly claim is his natural element?",
+        choices: [
+          "Fire 🔥",
+          "Earth 🌍",
+          "Air 💨",
+          "Water💧"
+        ],
+        answer: 3
+      }
     ];
 
     // ---------- DOM ----------
