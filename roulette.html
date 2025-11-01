@@ -14,7 +14,9 @@
     *{margin:0;padding:0;box-sizing:border-box}
     body{
       font-family:'Poppins',sans-serif;
-      background:radial-gradient(1200px 800px at 50% -10%, rgba(255,0,255,0.07), transparent 60%) , linear-gradient(135deg,var(--bg1),var(--bg2));
+      background:
+        radial-gradient(1200px 800px at 50% -10%, rgba(255,0,255,0.07), transparent 60%),
+        linear-gradient(135deg,var(--bg1),var(--bg2));
       color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow-x:hidden;position:relative
     }
     .particle{position:absolute;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(255,255,255,.8) 0%,transparent 70%);animation:float 6s infinite ease-in-out}
@@ -37,7 +39,15 @@
       filter:drop-shadow(0 0 24px rgba(255,0,255,.25)) drop-shadow(0 0 24px rgba(0,255,255,.15));
       border-radius:50%;
     }
-    .pointer{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-bottom:24px solid var(--neon-yellow);filter:drop-shadow(0 0 10px rgba(255,255,0,.8))}
+
+    /* LEFT-SIDE POINTER — points inward toward the wheel */
+    .pointer{
+      position:absolute;left:-8px;top:50%;transform:translateY(-50%);
+      width:0;height:0;
+      border-top:14px solid transparent;border-bottom:14px solid transparent;border-right:24px solid var(--neon-yellow);
+      filter:drop-shadow(0 0 10px rgba(255,255,0,.8));
+    }
+
     .controls{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;justify-content:center;margin-top:.25rem}
     .btn{
       background:linear-gradient(135deg,rgba(255,0,255,.18),rgba(0,255,255,.18));
@@ -59,7 +69,6 @@
   </style>
 </head>
 <body>
-  <!-- background particles -->
   <div id="particles"></div>
 
   <div class="wrap">
@@ -102,16 +111,16 @@
       }
     })();
 
-    // Slimmer, punchier set: 8 slices
+    // 8 slices
     const challenges = [
-      'Shot with someone new 🍸',
+      'Take shirt off 👕🔥',
       'Toast to Kostas 🥂',
-      'Sing a love line 🎤',
-      'Teach a Greek phrase 🇬🇷',
-      '10-sec dance battle 🪩',
-      'Wild 5-sec story 🤯',
-      'Best DJ drop 📀',
-      'Make a heart with hands 💖'
+      'Sing a song 🎤',
+      'Imitate Kostas 😂',
+      'Dance Zebekiko 🪩',
+      'Selfie with a stranger 🤳',
+      'Sexy pose 😏',
+      'Angel choice 😇'
     ];
 
     const sliceColors = ['#7c3aed','#14b8a6','#ec4899','#22c55e','#06b6d4','#f59e0b','#10b981','#0ea5e9'];
@@ -144,6 +153,7 @@
       ctx.clearRect(0,0,canvas.clientWidth, canvas.clientHeight);
 
       for(let i=0;i<n;i++){
+        // -Math.PI/2 visually rotates so slice 0 starts at the TOP
         const start = rotation + i*arc - Math.PI/2;
         const end   = start + arc;
 
@@ -159,20 +169,18 @@
         ctx.strokeStyle = 'rgba(0,0,0,0.35)';
         ctx.lineWidth = 2; ctx.stroke();
 
-        // text (smaller + outlined for readability)
+        // text
         const mid = (start + end)/2;
         ctx.save();
         ctx.translate(cx, cy);
         ctx.rotate(mid);
 
-        // text baseline near rim
         ctx.textAlign = 'right';
-        ctx.font = '700 13px Poppins, sans-serif';        // << smaller
-        const maxWidth = r - 18;                           // tighter padding
+        ctx.font = '700 13px Poppins, sans-serif';
+        const maxWidth = r - 18;
         const lineH = 15;
         const lines = wordWrapLines(ctx, challenges[i], maxWidth, 2);
 
-        // outline for contrast then fill
         ctx.lineWidth = 4;
         ctx.strokeStyle = 'rgba(0,0,0,0.45)';
         ctx.fillStyle = '#fff';
@@ -230,11 +238,21 @@
       const arc = (Math.PI*2)/n;
       const index = Math.floor(Math.random()*n);
 
+      // Center angle of chosen slice in wheel coordinates
       const sliceCenter = index*arc + arc/2;
-      const pointerAngle = Math.PI*1.5;  // top
+
+      // LEFT-SIDE pointer angle in canvas coordinates
+      const pointerAngle = Math.PI;
+
+      // Current wheel rotation (normalized)
       const current = ((rotation % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
-      const needed = (pointerAngle - sliceCenter);
-      let delta = ((needed - current) % (Math.PI*2) + Math.PI*2) % (Math.PI*2);
+
+      // IMPORTANT: drawing uses a -PI/2 offset (to place slice 0 at top).
+      // Visual condition to satisfy at the end of the spin:
+      //   (rotation_final + sliceCenter - PI/2) == pointerAngle  (mod 2π)
+      // Therefore the remaining delta from the *current* rotation is:
+      let delta = pointerAngle - (current + sliceCenter - Math.PI/2);
+      delta = ((delta % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
 
       const fullSpins = 6;
       const jitter = (Math.random()-0.5) * (arc/1.8);
