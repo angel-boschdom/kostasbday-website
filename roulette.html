@@ -40,13 +40,19 @@
       border-radius:50%;
     }
 
-    /* LEFT-SIDE POINTER — points inward toward the wheel */
+    /* RIGHT-SIDE POINTER — points inward toward the wheel */
     .pointer{
-      position:absolute;left:-8px;top:50%;transform:translateY(-50%);
-      width:0;height:0;
-      border-top:14px solid transparent;border-bottom:14px solid transparent;border-right:24px solid var(--neon-yellow);
+      position:absolute;
+      right:-8px;
+      top:50%;
+      transform:translateY(-50%);
+      width:0; height:0;
+      border-top:14px solid transparent;
+      border-bottom:14px solid transparent;
+      border-right:24px solid var(--neon-yellow); /* ← flipped from border-left */
       filter:drop-shadow(0 0 10px rgba(255,255,0,.8));
     }
+
 
     .controls{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;justify-content:center;margin-top:.25rem}
     .btn{
@@ -241,16 +247,16 @@
       // Center angle of chosen slice in wheel coordinates
       const sliceCenter = index*arc + arc/2;
 
-      // LEFT-SIDE pointer angle in canvas coordinates
-      const pointerAngle = Math.PI;
+      // RIGHT-SIDE pointer angle in canvas coordinates
+      const pointerAngle = 0; // (was Math.PI for left); 0 rad points to the right
 
       // Current wheel rotation (normalized)
       const current = ((rotation % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
 
-      // IMPORTANT: drawing uses a -PI/2 offset (to place slice 0 at top).
-      // Visual condition to satisfy at the end of the spin:
+      // IMPORTANT: drawing uses a -PI/2 offset (slice 0 at top).
+      // Condition at end of spin:
       //   (rotation_final + sliceCenter - PI/2) == pointerAngle  (mod 2π)
-      // Therefore the remaining delta from the *current* rotation is:
+      // So the remaining delta from the *current* rotation is:
       let delta = pointerAngle - (current + sliceCenter - Math.PI/2);
       delta = ((delta % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
 
